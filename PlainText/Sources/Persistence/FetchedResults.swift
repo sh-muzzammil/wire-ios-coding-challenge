@@ -55,9 +55,13 @@ final class FetchedResults<T: NSManagedObject>: NSObject, NSFetchedResultsContro
 
     // MARK: - Methods
 
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        results = self.controller.fetchedObjects ?? []
+    func controllerDidChangeContent() {
+        do {
+            try controller.performFetch()
+            results = controller.fetchedObjects ?? []
+        } catch {
+            print("failed to fetch items: \(error)")
+        }
     }
 
 }
-

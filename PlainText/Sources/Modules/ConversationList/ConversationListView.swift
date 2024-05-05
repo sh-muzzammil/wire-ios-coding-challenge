@@ -33,7 +33,9 @@ struct ConversationListView: View {
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { createNewConversationButton }
-        .sheet(isPresented: $viewModel.isPresentingCreateNewConversationModule) {
+        .sheet(isPresented: $viewModel.isPresentingCreateNewConversationModule, onDismiss: {
+            viewModel.handleEvent(.newConversationCreated)
+        }) {
             CreateConversationView(viewModel: factory.createConversationViewModel())
         }
     }

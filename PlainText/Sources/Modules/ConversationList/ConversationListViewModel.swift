@@ -67,6 +67,7 @@ final class ConversationListViewModel: ObservableObject {
             presentConversationCreationModule()
 
         case .newConversationCreated:
+            self.fr.controllerDidChangeContent()
             dismissConversationCreationModule()
         }
     }
