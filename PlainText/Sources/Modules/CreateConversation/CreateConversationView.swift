@@ -22,6 +22,7 @@ struct CreateConversationView: View {
 
     @ObservedObject
     var viewModel: CreateConversationViewModel
+    @Environment(\.dismiss) var dismiss
 
     @FocusState
     private var focusedField: Field?
@@ -58,6 +59,7 @@ struct CreateConversationView: View {
     private var confirmButton: some View {
         Button {
             viewModel.handleEvent(.confirmButtonTapped)
+            dismiss()
         } label: {
             Text(viewModel.confirmButtonText)
         }
