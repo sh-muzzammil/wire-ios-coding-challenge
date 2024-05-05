@@ -96,4 +96,3 @@ struct ConversationContentView: View {
             .environmentObject(factory)
     }
 }
-

@@ -30,10 +30,11 @@ final class ConversationContentViewModel: ObservableObject {
     private let selfUser: User
     private let conversation: Conversation
 
-    private let fetchedResults: FetchedResults<Message>
+    private var fetchedResults: FetchedResults<Message>
     private var subscription: AnyCancellable?
 
     private let transportSession = TransportSession()
+    private let context: NSManagedObjectContext
 
     init(
         selfUser: User,
@@ -43,7 +44,7 @@ final class ConversationContentViewModel: ObservableObject {
         self.title = conversation.name
         self.selfUser = selfUser
         self.conversation = conversation
-
+        self.context = context
         self.fetchedResults = FetchedResults(
             request: Message.sortedFetchRequestForMessages(in: conversation),
             context: context
@@ -55,6 +56,8 @@ final class ConversationContentViewModel: ObservableObject {
     enum Event {
 
         case didComposeMessage(String)
+        case reloadMessagesList
+
 
     }
 
@@ -62,9 +65,22 @@ final class ConversationContentViewModel: ObservableObject {
         switch event {
         case .didComposeMessage(let content):
             appendMessage(content: content)
+            
+        case .reloadMessagesList:
+            sortList()
         }
     }
 
+    private func sortList(){
+        
+        self.fetchedResults = FetchedResults(
+            request: Message.sortedFetchRequestForMessages(in: conversation),
+            context: context
+        )
+
+        self.subscription = fetchedResults.$results.assign(to: \.messages, on: self)
+    }
+    
     private func appendMessage(content: String) {
         guard
             !content.isEmpty,
@@ -82,6 +98,7 @@ final class ConversationContentViewModel: ObservableObject {
 
         conversation.lastModifiedDate = .now
         try? context.save()
+        messages.append(message)
 
         Task {
             let result = try await transportSession.encryptAndSend(message: message)
@@ -91,6 +108,7 @@ final class ConversationContentViewModel: ObservableObject {
                     do {
                         message.markAsSent()
                         try context.save()
+                        sortList()
                     } catch {
                         print("failed to append message: \(error)")
                     }
