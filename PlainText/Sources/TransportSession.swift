@@ -36,16 +36,20 @@ final class TransportSession {
     func encryptAndSend(
         message: Message,
         completion: ((Result<Void, Failure>) -> Void)? = nil
-    ) {
-        let plainText = message.content
-        let cipherText = encrypt(plainText)
+    ) async throws -> Result<Void, Failure> {
+        let content = await MainActor.run {
+            message.content
+        }
+        let plainText = content
+        let cipherText = try await encrypt(plainText)
         send(cipherText)
         completion?(.success(()))
+        return .success(())
     }
 
-    private func encrypt(_ plainText: String) -> String {
+    private func encrypt(_ plainText: String) async throws -> String {
         // Super slow encryption...
-        Thread.sleep(forTimeInterval: 3)
+        try await Task.sleep(for: .seconds(3))
         return plainText
     }
 

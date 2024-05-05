@@ -83,18 +83,21 @@ final class ConversationContentViewModel: ObservableObject {
         conversation.lastModifiedDate = .now
         try? context.save()
 
-        transportSession.encryptAndSend(message: message) {
-            switch $0 {
-            case .success:
-                do {
-                    message.markAsSent()
-                    try context.save()
-                } catch {
-                    print("failed to append message: \(error)")
-                }
+        Task {
+            let result = try await transportSession.encryptAndSend(message: message)
+            await MainActor.run {
+                switch result {
+                case .success:
+                    do {
+                        message.markAsSent()
+                        try context.save()
+                    } catch {
+                        print("failed to append message: \(error)")
+                    }
 
-            case .failure(let error):
-                print("failed to send message: \(error)")
+                case .failure(let error):
+                    print("failed to send message: \(error)")
+                }
             }
         }
     }
