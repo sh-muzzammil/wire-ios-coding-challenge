@@ -24,14 +24,16 @@ final class ModuleFactory: ObservableObject {
 
     let selfUser: User
     private let persistence: PersistenceController
-
+    private let conversationService : ConversationService
+    private let transportSession : TransportSession
     // MARK: - Life cycle
 
-    init(persistence: PersistenceController = PersistenceController()) {
+    init(persistence: PersistenceController = PersistenceController(), transportSession : TransportSession =  TransportSession()) {
         self.persistence = persistence
-
+        conversationService = ConversationService(transportSession: transportSession)
         let fetchRequest = User.fetchrequestForSelfUser()
         selfUser = try! persistence.viewContext.fetch(fetchRequest).first!
+        self.transportSession = transportSession
     }
 
     // MARK: - View model creation
@@ -55,7 +57,8 @@ final class ModuleFactory: ObservableObject {
         return ConversationContentViewModel(
             selfUser: selfUser,
             conversation: conversation,
-            context: persistence.viewContext
+            context: persistence.viewContext,
+            conversationService: ConversationService(transportSession: transportSession)
         )
     }
 

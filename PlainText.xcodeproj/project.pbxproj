@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3625E7FA2BE92AF300631FAE /* ConversationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3625E7F92BE92AF300631FAE /* ConversationService.swift */; };
 		EE2195342AA634CF006DE4AD /* PlainTextApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2195332AA634CF006DE4AD /* PlainTextApp.swift */; };
 		EE2195382AA634D0006DE4AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE2195372AA634D0006DE4AD /* Assets.xcassets */; };
 		EE21953B2AA634D0006DE4AD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE21953A2AA634D0006DE4AD /* Preview Assets.xcassets */; };
@@ -44,6 +45,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3625E7F92BE92AF300631FAE /* ConversationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationService.swift; sourceTree = "<group>"; };
 		EE2195302AA634CF006DE4AD /* PlainText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlainText.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE2195332AA634CF006DE4AD /* PlainTextApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainTextApp.swift; sourceTree = "<group>"; };
 		EE2195372AA634D0006DE4AD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 			children = (
 				EE2195612AA705FD006DE4AD /* ConversationContentViewModel.swift */,
 				EE2195632AA70614006DE4AD /* ConversationContentView.swift */,
+				3625E7F92BE92AF300631FAE /* ConversationService.swift */,
 			);
 			path = ConversationContent;
 			sourceTree = "<group>";
@@ -342,6 +345,7 @@
 				EE21956C2AA72D20006DE4AD /* MessageComposeViewModel.swift in Sources */,
 				EE21953D2AA634D0006DE4AD /* Persistence.swift in Sources */,
 				EE2195622AA705FD006DE4AD /* ConversationContentViewModel.swift in Sources */,
+				3625E7FA2BE92AF300631FAE /* ConversationService.swift in Sources */,
 				EE2195502AA63A05006DE4AD /* Conversation.swift in Sources */,
 				EE2195782AA84EDC006DE4AD /* TransportSession.swift in Sources */,
 				EE2195342AA634CF006DE4AD /* PlainTextApp.swift in Sources */,

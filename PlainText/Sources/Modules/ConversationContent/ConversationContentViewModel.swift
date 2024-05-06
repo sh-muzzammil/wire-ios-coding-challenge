@@ -33,18 +33,20 @@ final class ConversationContentViewModel: ObservableObject {
     private var fetchedResults: FetchedResults<Message>
     private var subscription: AnyCancellable?
 
-    private let transportSession = TransportSession()
     private let context: NSManagedObjectContext
+    var conversationService: ConversationService
 
     init(
         selfUser: User,
         conversation: Conversation,
-        context: NSManagedObjectContext
+        context: NSManagedObjectContext,
+        conversationService : ConversationService
     ) {
         self.title = conversation.name
         self.selfUser = selfUser
         self.conversation = conversation
         self.context = context
+        self.conversationService = conversationService
         self.fetchedResults = FetchedResults(
             request: Message.sortedFetchRequestForMessages(in: conversation),
             context: context
@@ -81,7 +83,7 @@ final class ConversationContentViewModel: ObservableObject {
         self.subscription = fetchedResults.$results.assign(to: \.messages, on: self)
     }
     
-    private func appendMessage(content: String) {
+    func appendMessage(content: String) {
         guard
             !content.isEmpty,
             let context = conversation.managedObjectContext
@@ -100,8 +102,11 @@ final class ConversationContentViewModel: ObservableObject {
         try? context.save()
         messages.append(message)
 
+        
+
         Task {
-            let result = try await transportSession.encryptAndSend(message: message)
+            let result = try await conversationService.appendMessage(message: message)
+            
             await MainActor.run {
                 switch result {
                 case .success:
