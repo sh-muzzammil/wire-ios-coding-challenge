@@ -44,10 +44,10 @@ final class ModuleFactory: ObservableObject {
         return ConversationListViewModel(context: persistence.viewContext)
     }
 
-    func createConversationViewModel(onConversationCreated: (() -> Void)? = nil) -> CreateConversationViewModel {
+    func createConversationViewModel(withDelegate delegate: CreateConversationViewModelDelegate) -> CreateConversationViewModel {
         return CreateConversationViewModel(
             context: persistence.viewContext,
-            onConversationCreated: onConversationCreated
+            delegate: delegate
         )
     }
 

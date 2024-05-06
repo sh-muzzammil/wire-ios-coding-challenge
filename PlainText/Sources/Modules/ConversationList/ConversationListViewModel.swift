@@ -81,3 +81,10 @@ final class ConversationListViewModel: ObservableObject {
     }
 
 }
+
+extension ConversationListViewModel: CreateConversationViewModelDelegate {
+    func didCreateConversation() {
+        handleEvent(.newConversationCreated)
+        isPresentingCreateNewConversationModule.toggle()
+    }
+}

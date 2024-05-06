@@ -33,10 +33,10 @@ struct ConversationListView: View {
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { createNewConversationButton }
-        .sheet(isPresented: $viewModel.isPresentingCreateNewConversationModule, onDismiss: {
-            viewModel.handleEvent(.newConversationCreated)
-        }) {
-            CreateConversationView(viewModel: factory.createConversationViewModel())
+        .sheet(isPresented: $viewModel.isPresentingCreateNewConversationModule) {
+            CreateConversationView(
+                viewModel: factory.createConversationViewModel(withDelegate: viewModel)
+            )
         }
     }
 
@@ -57,17 +57,18 @@ struct ConversationListView: View {
             Image(systemName: viewModel.createNewConversationButtonIconName)
         }
     }
-
 }
 
 // MARK: - Previews
 
-#Preview {
+struct ConversationListView_Previews: PreviewProvider {
+    static let factory = ModuleFactory.preview
 
-    let factory = ModuleFactory.preview
-
-    return NavigationView {
-        ConversationListView(viewModel: factory.conversationListViewModel())
+    static var previews: some View {
+        return NavigationView {
+            ConversationListView(viewModel: factory.conversationListViewModel())
+        }
+        .environmentObject(factory)
     }
-    .environmentObject(factory)
 }
+

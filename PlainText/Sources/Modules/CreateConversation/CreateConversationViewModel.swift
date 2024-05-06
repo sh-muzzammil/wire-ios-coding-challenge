@@ -31,22 +31,22 @@ final class CreateConversationViewModel: ObservableObject {
         return name.isEmpty
     }
 
-
-
-
     // MARK: - Dependencies
 
     let context: NSManagedObjectContext
 
     // MARK: - Properties
 
-    let onConversationCreated: (() -> Void)?
+    weak var delegate: CreateConversationViewModelDelegate?
 
     // MARK: - Life cycle
 
-    init(context: NSManagedObjectContext, onConversationCreated: (() -> Void)? = nil) {
+    init(
+        context: NSManagedObjectContext,
+        delegate: CreateConversationViewModelDelegate?
+    ) {
         self.context = context
-        self.onConversationCreated = onConversationCreated
+        self.delegate = delegate
     }
 
     // MARK: - Methods
@@ -67,9 +67,14 @@ final class CreateConversationViewModel: ObservableObject {
     private func createConversation() {
         let fetchRequest = User.fetchRequestForAllUsers()
         let allUsers = try! context.fetch(fetchRequest)
+        // TODO: Can we think of maybe adding a way of setting participants in the conversation
         _ = Conversation.insertNewObject(name: name, participants: Set(allUsers), in: context)
         try! context.save()
-        onConversationCreated?()
+        delegate?.didCreateConversation()
     }
 
+}
+
+protocol CreateConversationViewModelDelegate: AnyObject {
+    func didCreateConversation()
 }

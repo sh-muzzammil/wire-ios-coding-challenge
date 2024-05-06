@@ -83,6 +83,8 @@ private extension CreateConversationView {
 #Preview {
     let factory = ModuleFactory.preview
 
-    return CreateConversationView(viewModel: factory.createConversationViewModel())
+    weak var delegate: CreateConversationViewModelDelegate?
+
+    return CreateConversationView(viewModel: factory.createConversationViewModel(withDelegate: delegate!))
         .environmentObject(factory)
 }
