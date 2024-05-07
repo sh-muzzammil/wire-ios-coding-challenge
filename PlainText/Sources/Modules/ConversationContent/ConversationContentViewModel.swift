@@ -34,18 +34,21 @@ final class ConversationContentViewModel: ObservableObject {
     private var subscription: AnyCancellable?
 
     private let context: NSManagedObjectContext
+    private let bgContext: NSManagedObjectContext
     var conversationService: ConversationService
 
     init(
         selfUser: User,
         conversation: Conversation,
         context: NSManagedObjectContext,
+        bgContext: NSManagedObjectContext,
         conversationService : ConversationService
     ) {
         self.title = conversation.name
         self.selfUser = selfUser
         self.conversation = conversation
         self.context = context
+        self.bgContext = bgContext
         self.conversationService = conversationService
         self.fetchedResults = FetchedResults(
             request: Message.sortedFetchRequestForMessages(in: conversation),
@@ -91,29 +94,32 @@ final class ConversationContentViewModel: ObservableObject {
             return
         }
 
-        let message = Message.insertNewObject(
-            content: content,
-            sender: selfUser,
-            conversation: conversation,
-            in: context
-        )
+        bgContext.perform {
+            guard
+                let bgConversation = self.bgContext.object(with: self.conversation.objectID) as? Conversation,
+                let bgSelfUser = self.bgContext.object(with: self.selfUser.objectID) as? User
+            else {
+                return
+            }
+            let bgMessage = Message.insertNewObject(
+                content: content,
+                sender: bgSelfUser,
+                conversation: bgConversation,
+                in: self.bgContext
+            )
+            bgConversation.lastModifiedDate = .now
+            try? self.bgContext.save()
 
-        conversation.lastModifiedDate = .now
-        try? context.save()
-        messages.append(message)
-
-        
-
-        Task {
-            let result = try await conversationService.appendMessage(message: message)
-            
-            await MainActor.run {
+            self.conversationService.appendMessage(message: bgMessage) { [weak self] result in
                 switch result {
                 case .success:
                     do {
-                        message.markAsSent()
-                        try context.save()
-                        sortList()
+                        bgMessage.markAsSent()
+                        try self?.bgContext.save()
+                        self?.context.perform {
+                            try? self?.context.save()
+                            self?.sortList()
+                        }
                     } catch {
                         print("failed to append message: \(error)")
                     }

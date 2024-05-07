@@ -41,9 +41,9 @@ struct ConversationListView: View {
     }
 
     @ViewBuilder
-    private func cell(for item: Conversation) -> some View {
+    private func cell(for item: ConversationWrapper) -> some View {
         NavigationLink {
-            ConversationContentView(viewModel: factory.conversationContentViewModel(conversation: item))
+            ConversationContentView(viewModel: factory.conversationContentViewModel(conversation: item.conversation as! Conversation))
         } label: {
             Text(item.name)
         }
@@ -71,4 +71,3 @@ struct ConversationListView_Previews: PreviewProvider {
         .environmentObject(factory)
     }
 }
-

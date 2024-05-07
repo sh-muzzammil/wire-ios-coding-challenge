@@ -26,6 +26,7 @@ struct PersistenceController {
 
     private let container: NSPersistentContainer
 
+    let backgroundContext: NSManagedObjectContext
     // MARK: - Life cycle
 
     init(
@@ -45,6 +46,9 @@ struct PersistenceController {
         }
 
         viewContext = container.viewContext
+
+        backgroundContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        backgroundContext.parent = viewContext
 
         if forceAddInitialData {
             addInitialData()

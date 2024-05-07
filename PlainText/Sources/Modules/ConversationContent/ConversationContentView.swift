@@ -62,37 +62,3 @@ struct ConversationContentView: View {
     }
 
 }
-
-// MARK: - Previews
-
-#Preview {
-    
-    let factory = ModuleFactory.preview
-    
-    let conversation: Conversation = {
-        let selfUser = factory.selfUser
-        let context = selfUser.managedObjectContext!
-        let conversation = Conversation.insertNewObject(
-            name: "Team meeting",
-            in: context
-        )
-        
-        let message = Message.insertNewObject(
-            content: "Hello everyone!",
-            sender: selfUser,
-            conversation: conversation,
-            in: context)
-        message.markAsSent()
-        
-        Message.insertNewObject(content: "What time do we start?",
-                                sender: selfUser,
-                                conversation: conversation,
-                                in: context)
-        return conversation
-    }()
-    
-    return NavigationView {
-        ConversationContentView(viewModel: factory.conversationContentViewModel(conversation: conversation))
-            .environmentObject(factory)
-    }
-}

@@ -7,35 +7,40 @@
 
 import Foundation
 
+protocol TransportSessionProtocol {
+    func encryptAndSend(
+        message: Message,
+        completion: ((Result<Void, TransportSession.Failure>) -> Void)?
+    )
+}
+
+extension TransportSession: TransportSessionProtocol {}
+
 class ConversationService {
 
     enum Failure: Error {
 
-        case networkError
+        case genericError
 
     }
     
-    let transportSession : TransportSession
+    let transportSession : TransportSessionProtocol
 
-    init(transportSession: TransportSession) {
+    init(transportSession: TransportSessionProtocol) {
         self.transportSession = transportSession
     }
     
     func appendMessage(
         message: Message,
         completion: ((Result<Bool,Failure>) -> Void)? = nil
-    ) async throws -> Result<Bool,Failure> {
-        
-            let result = try await transportSession.encryptAndSend(message: message)
-                switch result {
-                case .success:
-                    do {
-                          return .success(true)
-                    }
-
-                case .failure(let error):
-                    print("failed to send message: \(error)")
-                }
-        return .success(true)
+    ) {
+        transportSession.encryptAndSend(message: message) { result in
+            switch result {
+            case .success:
+                completion?(.success(true))
+            case .failure(_):
+                completion?(.failure(.genericError))
+            }
+        }
     }
 }

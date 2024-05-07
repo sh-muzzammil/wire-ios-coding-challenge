@@ -45,6 +45,8 @@ final class FetchedResults<T: NSManagedObject>: NSObject, NSFetchedResultsContro
 
         super.init()
 
+        controller.delegate = self
+
         do {
             try controller.performFetch()
             results = controller.fetchedObjects ?? []
@@ -64,4 +66,8 @@ final class FetchedResults<T: NSManagedObject>: NSObject, NSFetchedResultsContro
         }
     }
 
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        try? controller.performFetch()
+        results = self.controller.fetchedObjects ?? []
+    }
 }

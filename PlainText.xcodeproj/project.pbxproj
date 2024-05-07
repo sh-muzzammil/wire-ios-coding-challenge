@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3625E7FA2BE92AF300631FAE /* ConversationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3625E7F92BE92AF300631FAE /* ConversationService.swift */; };
+		369D0B702BEAE4F50097BAE3 /* Improvements.md in Resources */ = {isa = PBXBuildFile; fileRef = 369D0B6F2BEAE4F40097BAE3 /* Improvements.md */; };
 		EE2195342AA634CF006DE4AD /* PlainTextApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2195332AA634CF006DE4AD /* PlainTextApp.swift */; };
 		EE2195382AA634D0006DE4AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE2195372AA634D0006DE4AD /* Assets.xcassets */; };
 		EE21953B2AA634D0006DE4AD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE21953A2AA634D0006DE4AD /* Preview Assets.xcassets */; };
@@ -46,6 +47,7 @@
 
 /* Begin PBXFileReference section */
 		3625E7F92BE92AF300631FAE /* ConversationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationService.swift; sourceTree = "<group>"; };
+		369D0B6F2BEAE4F40097BAE3 /* Improvements.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Improvements.md; sourceTree = "<group>"; };
 		EE2195302AA634CF006DE4AD /* PlainText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlainText.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE2195332AA634CF006DE4AD /* PlainTextApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainTextApp.swift; sourceTree = "<group>"; };
 		EE2195372AA634D0006DE4AD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 			children = (
 				EE2195882AA8B195006DE4AD /* README.md */,
 				EE21958A2AA8BA1F006DE4AD /* NOTES.md */,
+				369D0B6F2BEAE4F40097BAE3 /* Improvements.md */,
 				EE2195322AA634CF006DE4AD /* PlainText */,
 				EE5662522ABB2581004DCAD5 /* PlainTextTests */,
 				EE2195312AA634CF006DE4AD /* Products */,
@@ -320,6 +323,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				369D0B702BEAE4F50097BAE3 /* Improvements.md in Resources */,
 				EE21958B2AA8BA1F006DE4AD /* NOTES.md in Resources */,
 				EE2195892AA8B196006DE4AD /* README.md in Resources */,
 				EE21953B2AA634D0006DE4AD /* Preview Assets.xcassets in Resources */,

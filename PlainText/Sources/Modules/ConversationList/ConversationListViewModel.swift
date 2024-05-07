@@ -20,6 +20,41 @@ import Foundation
 import CoreData
 import Combine
 
+protocol ConversationProtocol {
+    var name: String { get }
+}
+
+extension Conversation: ConversationProtocol {}
+
+struct ConversationWrapper: Identifiable {
+    var id: String {
+        name
+    }
+
+    let conversation: ConversationProtocol
+    init(conversation: ConversationProtocol) {
+        self.conversation = conversation
+    }
+
+    var name: String { conversation.name }
+}
+
+protocol ConversationStore {
+    var conversationsPublisher: AnyPublisher<[ConversationWrapper], Never> { get }
+}
+
+class CoreDataConversationStore: ConversationStore {
+    private let fr: FetchedResults<Conversation>
+
+    init(fr: FetchedResults<Conversation>) {
+        self.fr = fr
+    }
+
+    var conversationsPublisher: AnyPublisher<[ConversationWrapper], Never> {
+        fr.$results.map{ $0.map{ ConversationWrapper(conversation: $0) } }.eraseToAnyPublisher()
+    }
+}
+
 final class ConversationListViewModel: ObservableObject {
 
     // MARK: - State
@@ -28,28 +63,23 @@ final class ConversationListViewModel: ObservableObject {
     let createNewConversationButtonIconName = "square.and.pencil"
 
     @Published
-    var conversations = [Conversation]()
+    var conversations = [ConversationWrapper]()
 
     @Published
     var isPresentingCreateNewConversationModule = false
 
     // MARK: - Properties
 
-    private let context: NSManagedObjectContext
-    private let fr: FetchedResults<Conversation>
+    private let conversationStore: ConversationStore
     private var subscription: AnyCancellable?
 
     // MARK: - Life cycle
 
-    init(context: NSManagedObjectContext) {
-        self.context = context
-
-        self.fr = FetchedResults(
-            request: Conversation.sortedfetchRequestForAllConversations(),
-            context: context
-        )
-
-        self.subscription = fr.$results.assign(to: \.conversations, on: self)
+    init(conversationStore: ConversationStore) {
+        self.conversationStore = conversationStore
+        self.subscription = conversationStore
+            .conversationsPublisher
+            .assign(to: \.conversations, on: self)
     }
 
     // MARK: - Methods
@@ -67,7 +97,6 @@ final class ConversationListViewModel: ObservableObject {
             presentConversationCreationModule()
 
         case .newConversationCreated:
-            self.fr.controllerDidChangeContent()
             dismissConversationCreationModule()
         }
     }

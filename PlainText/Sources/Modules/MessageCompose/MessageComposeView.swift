@@ -52,10 +52,3 @@ struct MessageComposeView: View {
     }
 
 }
-
-// MARK: - Previews
-
-#Preview {
-    MessageComposeView(viewModel: MessageComposeViewModel())
-        .previewLayout(.sizeThatFits)
-}

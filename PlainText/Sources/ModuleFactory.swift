@@ -28,7 +28,10 @@ final class ModuleFactory: ObservableObject {
     private let transportSession : TransportSession
     // MARK: - Life cycle
 
-    init(persistence: PersistenceController = PersistenceController(), transportSession : TransportSession =  TransportSession()) {
+    init(
+        persistence: PersistenceController = PersistenceController(),
+        transportSession : TransportSession =  TransportSession()
+    ) {
         self.persistence = persistence
         conversationService = ConversationService(transportSession: transportSession)
         let fetchRequest = User.fetchrequestForSelfUser()
@@ -43,7 +46,12 @@ final class ModuleFactory: ObservableObject {
     }
 
     func conversationListViewModel() -> ConversationListViewModel {
-        return ConversationListViewModel(context: persistence.viewContext)
+        let fr = FetchedResults(
+            request: Conversation.sortedfetchRequestForAllConversations(),
+            context: persistence.viewContext
+        )
+        let conversationStore = CoreDataConversationStore(fr: fr)
+        return ConversationListViewModel(conversationStore: conversationStore)
     }
 
     func createConversationViewModel(withDelegate delegate: CreateConversationViewModelDelegate) -> CreateConversationViewModel {
@@ -58,6 +66,7 @@ final class ModuleFactory: ObservableObject {
             selfUser: selfUser,
             conversation: conversation,
             context: persistence.viewContext,
+            bgContext: persistence.backgroundContext,
             conversationService: ConversationService(transportSession: transportSession)
         )
     }
